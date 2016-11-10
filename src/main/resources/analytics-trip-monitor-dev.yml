@@ -1,0 +1,26 @@
+server:
+  applicationConnectors:
+    - type: http
+      port: 80
+  gzip:
+    enabled: true
+
+
+applicationConfig:
+  applicationName: analytics-trip-monitor
+  logLevel: DEBUG
+
+s3ConfigurationAppTokenManager:
+  name: appTokenManager
+  s3Bucket: analytics-credentials
+  s3Key: uas/uas.analytics.app.prod.properties
+
+s3ConfigurationServiceTokenManager:
+  name: serviceTokenManager
+  s3Bucket: analytics-credentials
+  s3Key: uas/uas.analytics.service.prod.properties
+
+s3ConfigurationThresholdDbProps:
+  name: TripMonitorThresholdConfig
+  s3Bucket: analytics-application-configuration
+  s3Key: analytics.trip.monitor.prod.properties

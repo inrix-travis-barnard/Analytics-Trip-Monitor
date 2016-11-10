@@ -1,0 +1,20 @@
+server:
+  applicationConnectors:
+    - type: http
+      port: 80
+  gzip:
+    enabled: true
+
+applicationConfig:
+  applicationName: analytics-sample-api
+  logLevel: TRACE
+
+s3ConfigurationAppTokenManager:
+  name: appTokenManager
+  s3Bucket: analytics-credentials
+  s3Key: uas.analytics.app.qa.properties
+
+s3ConfigurationServiceTokenManager:
+  name: serviceTokenManager
+  s3Bucket: analytics-credentials
+  s3Key: uas.analytics.service.qa.properties
