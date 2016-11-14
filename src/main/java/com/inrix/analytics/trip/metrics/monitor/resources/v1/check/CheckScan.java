@@ -80,6 +80,7 @@ public class CheckScan {
             // 1 Get provider list
             Map<Integer, ProviderDetail> providerMap = providerSource.loadProviderData();
 
+
             // 2 Get ThresholdInfo from monitorThresholdDAL, which contains lookBackDays and percent
             List<Integer> providerList = providerMap.keySet().stream().map(Integer::valueOf).collect(Collectors.toList());
             GetMultipleThresholdRequest thresholdRequest = new GetMultipleThresholdRequest(null, providerList);

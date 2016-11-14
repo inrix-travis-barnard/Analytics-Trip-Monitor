@@ -15,8 +15,8 @@
 
         <docker.directory>docker/</docker.directory>
 
-        <finalName>analyticsSampleApplication</finalName>
-        <mainClass>com.inrix.analytics.api.sample.SampleApplication</mainClass>
+        <finalName>tripMetricsMonitor</finalName>
+        <mainClass>com.inrix.analytics.trip.metrics.monitor.App</mainClass>
 
         <jackson.version>2.7.6</jackson.version>
         <analytics-api-core.version>DEVELOP-1.0-SNAPSHOT</analytics-api-core.version>
@@ -90,7 +90,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
-                <version>2.4.1</version>
+                <version>2.4.3</version>
                 <executions>
                     <execution>
                         <phase>package</phase>
@@ -98,8 +98,20 @@
                             <goal>shade</goal>
                         </goals>
                         <configuration>
+                            <filters>
+                                <filter>
+                                    <!-- filter out signatures from signed deps to prevent build failures -->
+                                    <artifact>*.*</artifact>
+                                    <excludes>
+                                        <exclude>META-INF/*.SF</exclude>
+                                        <exclude>META-INF/*.DSA</exclude>
+                                        <exclude>META-INF/*.RSA</exclude>
+                                    </excludes>
+                                </filter>
+                            </filters>
                             <transformers>
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer" />
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.ComponentsXmlResourceTransformer"/>
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
                                     <mainClass>${mainClass}</mainClass>
                                     <manifestEntries>
