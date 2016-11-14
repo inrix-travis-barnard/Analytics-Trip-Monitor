@@ -23,6 +23,6 @@ public class ProviderDetailsLoaderTest {
         }
 
 
-        assertTrue(providerMap.keySet().size() == 163);
+        assertTrue(providerMap.keySet().size() == 164);
     }
 }
