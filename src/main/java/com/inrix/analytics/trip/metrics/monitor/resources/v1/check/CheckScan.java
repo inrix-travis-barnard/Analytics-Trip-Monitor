@@ -123,6 +123,12 @@ public class CheckScan {
                     continue;
                 }
 
+                // Today's metrics has this provider, but not previous metrics, new provider!
+                if (!avgTripCount.containsKey(providerId)){
+                    badList.add(new ProviderCheckInfo(providerId, ProviderCheckInfo.FailureReason.NEWAPPEAR));
+                    continue;
+                }
+
                 // trip count lower than 2000 will be discarded
                 if (avgTripCount.get(providerId) < 2000){
                     continue;

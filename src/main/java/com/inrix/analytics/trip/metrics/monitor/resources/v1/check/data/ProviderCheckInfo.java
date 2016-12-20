@@ -15,7 +15,8 @@ public class ProviderCheckInfo {
 
     public enum FailureReason {
         MISSING("This provider id is missing from today's tripMetrics"),
-        THRESHOLD("This provider's trip count exceeds moving average threshold");
+        THRESHOLD("This provider's trip count exceeds moving average threshold"),
+        NEWAPPEAR("This provider id is not in previous tripMetrics report");
 
         private final String msg;
 

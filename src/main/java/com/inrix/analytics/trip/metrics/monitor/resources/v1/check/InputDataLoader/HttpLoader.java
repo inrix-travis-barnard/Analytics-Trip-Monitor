@@ -29,7 +29,7 @@ public class HttpLoader implements ITripMetricsLoader {
         String downloadUrl = "http://analytics-trips-api.inrix.com/analytics-population-api/v1/tripMetrics";
 
         String parameters = String.format("fromDate=%sT00:00:00.000Z&toDate=%sT00:00:00.000Z&byGeography=true&dateInterval=day" +
-                "&token=BGeMTyeTexMEgpNI-KDU9d7*LxP5st3ThcOs7FnroSE|",
+                "&token=FYPb3wPvb-69vYDL37uT39OEaqz*CujXLsNeQw5Od0U|",
         start.toString("yyyy-MM-dd"),
                 end.toString("yyyy-MM-dd"));
 
@@ -39,7 +39,7 @@ public class HttpLoader implements ITripMetricsLoader {
                 .queryParam("fromDate", start.toString("yyyy-MM-dd") + "T00:00:00.000Z")
                 .queryParam("toDate", end.toString("yyyy-MM-dd") + "T00:00:00.000Z")
                 .queryParam("dateInterval", "day")
-                .queryParam("token", "BGeMTyeTexMEgpNI-KDU9d7*LxP5st3ThcOs7FnroSE|")
+                .queryParam("token", "FYPb3wPvb-69vYDL37uT39OEaqz*CujXLsNeQw5Od0U|")
                 .queryParam("byGeography", "true")
                 .request("application/json");
         Response response = builder.get();

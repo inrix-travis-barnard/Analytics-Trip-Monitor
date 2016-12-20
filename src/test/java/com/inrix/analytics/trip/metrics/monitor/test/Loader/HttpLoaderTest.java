@@ -14,7 +14,7 @@ import java.util.List;
  */
 public class HttpLoaderTest {
 
-    @Test
+    //@Test
     public void testLoad() {
         HttpLoader loader = new HttpLoader();
         try {
