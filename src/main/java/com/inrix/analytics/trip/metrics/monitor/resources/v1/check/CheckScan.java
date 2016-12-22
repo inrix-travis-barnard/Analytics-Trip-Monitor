@@ -15,6 +15,7 @@ import com.inrix.analytics.trip.metrics.monitor.AppConfiguration;
 import com.inrix.analytics.trip.metrics.monitor.resources.v1.check.InputDataLoader.HttpLoader;
 import com.inrix.analytics.trip.metrics.monitor.resources.v1.check.InputDataLoader.ProviderDetails.ProviderDetailsS3Source;
 import com.inrix.analytics.trip.metrics.monitor.resources.v1.check.InputDataProcessor.ByProviderCountryProcessor;
+import com.inrix.analytics.trip.metrics.monitor.resources.v1.check.checkers.Checkers;
 import com.inrix.analytics.trip.metrics.monitor.resources.v1.check.data.CheckResponse;
 import com.google.common.base.Optional;
 import com.inrix.analytics.trip.metrics.monitor.resources.v1.check.data.ProviderCheckInfo;
@@ -134,19 +135,7 @@ public class CheckScan {
                     continue;
                 }
 
-                if (percentageCheck(
-                        newCount.get(providerId).getTotalTripCount(),
-                        avgTripCount.get(providerId),
-                        thresholdMap.get(providerId).getThresholdPercent()
-                )){
-                    badList.add(new ProviderCheckInfo(
-                            providerId,
-                            newCount.get(providerId).getTotalTripCount(),
-                            avgTripCount.get(providerId),
-                            ProviderCheckInfo.ThresholdType.PERCENT,
-                            thresholdMap.get(providerId).getThresholdPercent()
-                    ));
-                }
+                Checkers.percentageCheck(badList, providerId, newCount.get(providerId).getTotalTripCount(), avgTripCount.get(providerId), thresholdMap.get(providerId));
             }
 
             CheckResponse.Status finalStatus;

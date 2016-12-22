@@ -15,7 +15,8 @@ public class ProviderCheckInfo {
 
     public enum FailureReason {
         MISSING("This provider id is missing from today's tripMetrics"),
-        THRESHOLD("This provider's trip count exceeds moving average threshold"),
+        UPTHRESHOLD("This provider's trip count exceeds moving average threshold"),
+        DOWNTHRESHOLD("This provider's trip count drop below moving average threshold"),
         NEWAPPEAR("This provider id is not in previous tripMetrics report");
 
         private final String msg;
@@ -45,6 +46,9 @@ public class ProviderCheckInfo {
     @JsonProperty("threshold")
     private double threshold;
 
+    @JsonProperty("percentage")
+    private double percentage;
+
     @JsonProperty("reason")
     private FailureReason reason;
 
@@ -53,13 +57,14 @@ public class ProviderCheckInfo {
         this.reason = reason;
     }
 
-    public ProviderCheckInfo(int rawProviderId, long totalTripCount, long previousAvgTripCount, ThresholdType thresholdType, double threshold){
+    public ProviderCheckInfo(int rawProviderId, long totalTripCount, long previousAvgTripCount, ThresholdType thresholdType, double threshold, double percentage, FailureReason reason){
         this.rawProviderId = rawProviderId;
         this.totalTripCount = totalTripCount;
         this.previousAvgTripCount = previousAvgTripCount;
-        this.threshold = threshold;
+        this.threshold = threshold  ;
+        this.percentage = percentage  ;
         this.thresholdType = thresholdType;
-        this.reason = FailureReason.THRESHOLD;
+        this.reason = reason;
     }
 
 }
