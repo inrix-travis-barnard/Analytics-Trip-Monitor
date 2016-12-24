@@ -17,7 +17,7 @@ public class ProviderCheckInfo {
         MISSING("This provider id is missing from today's tripMetrics"),
         UPTHRESHOLD("This provider's trip count exceeds moving average threshold"),
         DOWNTHRESHOLD("This provider's trip count drop below moving average threshold"),
-        NEWAPPEAR("This provider id is not in previous tripMetrics report");
+        NEWAPPEAR("This provider id is not in previous tripMetrics report. New provider?");
 
         private final String msg;
 
@@ -33,6 +33,9 @@ public class ProviderCheckInfo {
 
     @JsonProperty("rawProviderId")
     private int rawProviderId;
+
+    @JsonProperty("providerName")
+    private String providerName;
 
     @JsonProperty("totalTripCount")
     private long totalTripCount;
@@ -52,13 +55,15 @@ public class ProviderCheckInfo {
     @JsonProperty("reason")
     private FailureReason reason;
 
-    public ProviderCheckInfo(int rawProviderId, FailureReason reason){
+    public ProviderCheckInfo(int rawProviderId, String providerName, FailureReason reason){
         this.rawProviderId = rawProviderId;
+        this.providerName = providerName;
         this.reason = reason;
     }
 
-    public ProviderCheckInfo(int rawProviderId, long totalTripCount, long previousAvgTripCount, ThresholdType thresholdType, double threshold, double percentage, FailureReason reason){
+    public ProviderCheckInfo(int rawProviderId, String providerName, long totalTripCount, long previousAvgTripCount, ThresholdType thresholdType, double threshold, double percentage, FailureReason reason){
         this.rawProviderId = rawProviderId;
+        this.providerName = providerName;
         this.totalTripCount = totalTripCount;
         this.previousAvgTripCount = previousAvgTripCount;
         this.threshold = threshold  ;

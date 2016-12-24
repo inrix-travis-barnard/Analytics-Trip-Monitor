@@ -119,14 +119,14 @@ public class CheckScan {
             List<ProviderCheckInfo> badList = new ArrayList<>();
 
             for (int providerId : providerList){
-                if (!newCount.containsKey(providerId)){
-                    badList.add(new ProviderCheckInfo(providerId, ProviderCheckInfo.FailureReason.MISSING));
+                if (avgTripCount.containsKey(providerId) && !newCount.containsKey(providerId)){
+                    badList.add(new ProviderCheckInfo(providerId, providerMap.get(providerId).getName(), ProviderCheckInfo.FailureReason.MISSING));
                     continue;
                 }
 
                 // Today's metrics has this provider, but not previous metrics, new provider!
                 if (!avgTripCount.containsKey(providerId)){
-                    badList.add(new ProviderCheckInfo(providerId, ProviderCheckInfo.FailureReason.NEWAPPEAR));
+                    badList.add(new ProviderCheckInfo(providerId, providerMap.get(providerId).getName(),ProviderCheckInfo.FailureReason.NEWAPPEAR));
                     continue;
                 }
 
@@ -135,7 +135,13 @@ public class CheckScan {
                     continue;
                 }
 
-                Checkers.percentageCheck(badList, providerId, newCount.get(providerId).getTotalTripCount(), avgTripCount.get(providerId), thresholdMap.get(providerId));
+                Checkers.percentageCheck(
+                        badList,
+                        providerId,
+                        providerMap.get(providerId).getName(),
+                        newCount.get(providerId).getTotalTripCount(),
+                        avgTripCount.get(providerId),
+                        thresholdMap.get(providerId));
             }
 
             CheckResponse.Status finalStatus;

@@ -10,12 +10,13 @@ import java.util.List;
  */
 public class Checkers {
 
-    public static void percentageCheck(List<ProviderCheckInfo> badList, int providerId, long current, long previous, ThresholdInfo thresholdInfo) {
+    public static void percentageCheck(List<ProviderCheckInfo> badList, int providerId, String providerName, long current, long previous, ThresholdInfo thresholdInfo) {
         double percentDiff = (double)(current - previous) / previous ;
         if (percentDiff > 0) {
             if (percentDiff > thresholdInfo.getUpThresholdPercent()){
                 badList.add(new ProviderCheckInfo(
                         providerId,
+                        providerName,
                         current,
                         previous,
                         ProviderCheckInfo.ThresholdType.PERCENT,
@@ -28,6 +29,7 @@ public class Checkers {
             if (percentDiff < thresholdInfo.getDownThresholdPercent()){
                 badList.add(new ProviderCheckInfo(
                         providerId,
+                        providerName,
                         current,
                         previous,
                         ProviderCheckInfo.ThresholdType.PERCENT,
