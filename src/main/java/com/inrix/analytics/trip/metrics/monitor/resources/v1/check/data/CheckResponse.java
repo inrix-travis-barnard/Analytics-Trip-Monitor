@@ -12,7 +12,7 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class CheckResponse {
     public static enum Status {
-        OK, WARN, FAIL
+        OK, WARN, ERROR
     }
 
     @JsonProperty("type")
@@ -24,20 +24,32 @@ public class CheckResponse {
     @JsonProperty("status")
     private Status status;
 
-    @JsonProperty("details")
-    private List<ProviderCheckInfo> details;
+    @JsonProperty("overThreshold")
+    private List<ProviderCheckInfo> overThreshold;
+
+    @JsonProperty("belowThreshold")
+    private List<ProviderCheckInfo> belowThreshold;
+
+    @JsonProperty("missing")
+    private List<ProviderCheckInfo> missing;
 
     public CheckResponse (String startDate, Status status) {
         this.startDate = startDate;
         this.status = status;
-        this.details = new ArrayList<>();
+        this.overThreshold = new ArrayList<>();
+        this.belowThreshold = new ArrayList<>();
+        this.missing = new ArrayList<>();
     }
 
-    public void addDetail (ProviderCheckInfo providerCheckInfo){
-        this.details.add(providerCheckInfo);
+    public void addOverThreshold (List<ProviderCheckInfo> providerCheckInfos){
+        this.overThreshold.addAll(providerCheckInfos);
     }
 
-    public void addDetails (List<ProviderCheckInfo> providerCheckInfos){
-        this.details.addAll(providerCheckInfos);
+    public void addBelowThreshold (List<ProviderCheckInfo> providerCheckInfos){
+        this.belowThreshold.addAll(providerCheckInfos);
+    }
+
+    public void addMissing (List<ProviderCheckInfo> providerCheckInfos){
+        this.missing.addAll(providerCheckInfos);
     }
 }

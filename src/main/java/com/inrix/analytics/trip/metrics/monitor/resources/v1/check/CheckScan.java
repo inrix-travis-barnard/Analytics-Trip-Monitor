@@ -116,44 +116,51 @@ public class CheckScan {
             // 4 Calculate look back averages
             Map<Integer, Long> avgTripCount = getAvgTripCount(maxLookBackDay, startDate);
 
-            List<ProviderCheckInfo> badList = new ArrayList<>();
+            List<ProviderCheckInfo> missingList = new ArrayList<>();
+            List<ProviderCheckInfo> overList = new ArrayList<>();
+            List<ProviderCheckInfo> belowList = new ArrayList<>();
 
             for (int providerId : providerList){
-                if (avgTripCount.containsKey(providerId) && !newCount.containsKey(providerId)){
-                    badList.add(new ProviderCheckInfo(providerId, providerMap.get(providerId).getName(), ProviderCheckInfo.FailureReason.MISSING));
-                    continue;
-                }
 
                 // Today's metrics has this provider, but not previous metrics, new provider!
-                if (!avgTripCount.containsKey(providerId)){
-                    badList.add(new ProviderCheckInfo(providerId, providerMap.get(providerId).getName(),ProviderCheckInfo.FailureReason.NEWAPPEAR));
+                if (!avgTripCount.containsKey(providerId) && newCount.containsKey(providerId)){
+                    missingList.add(new ProviderCheckInfo(providerId, providerMap.get(providerId).getName(),ProviderCheckInfo.FailureReason.NEWAPPEAR));
                     continue;
                 }
 
-                // trip count lower than 2000 will be discarded
-                if (avgTripCount.get(providerId) < 2000){
-                    continue;
+                if (avgTripCount.containsKey(providerId)){
+                    // trip count lower than 2000 will be discarded
+                    if (avgTripCount.get(providerId) < 2000){
+                        continue;
+                    }
+
+                    // Previous metrics has this provider, but missing from today's metrics
+                    if (!newCount.containsKey(providerId)){
+                        missingList.add(new ProviderCheckInfo(providerId, providerMap.get(providerId).getName(), ProviderCheckInfo.FailureReason.MISSING));
+                        continue;
+                    } else {
+                        Checkers.percentageCheck(
+                                overList,
+                                belowList,
+                                providerId,
+                                providerMap.get(providerId).getName(),
+                                newCount.get(providerId).getTotalTripCount(),
+                                avgTripCount.get(providerId),
+                                thresholdMap.get(providerId));
+                    }
                 }
-
-                Checkers.percentageCheck(
-                        badList,
-                        providerId,
-                        providerMap.get(providerId).getName(),
-                        newCount.get(providerId).getTotalTripCount(),
-                        avgTripCount.get(providerId),
-                        thresholdMap.get(providerId));
             }
 
-            CheckResponse.Status finalStatus;
-            if(badList.size() == 0){
-                finalStatus = CheckResponse.Status.OK;
-            } else if (badList.size() < 10){
-                finalStatus = CheckResponse.Status.WARN;
-            } else {
-                finalStatus = CheckResponse.Status.FAIL;
-            }
+            CheckResponse.Status finalStatus = getStatus(
+                    missingList,
+                    overList,
+                    belowList
+            );
+
             CheckResponse retVal = new CheckResponse(startDate.toString(), finalStatus);
-            retVal.addDetails(badList);
+            retVal.addMissing(missingList);
+            retVal.addBelowThreshold(belowList);
+            retVal.addOverThreshold(overList);
             return retVal;
 
         } catch (Exception e) {
@@ -202,8 +209,21 @@ public class CheckScan {
         return retVal;
     }
 
-    private boolean percentageCheck(long current, long previous, double percentage) {
-        return ((double)Math.abs(current - previous) / previous) > percentage;
+    public CheckResponse.Status getStatus(
+            List<ProviderCheckInfo> missingList,
+            List<ProviderCheckInfo> overList,
+            List<ProviderCheckInfo> belowList) {
+
+        CheckResponse.Status result = CheckResponse.Status.OK;
+
+        if (overList.size() > 0) {
+            result = CheckResponse.Status.WARN;
+        }
+
+        if (missingList.size() > 0 || belowList.size() > 0) {
+            result = CheckResponse.Status.ERROR;
+        }
+        return result;
     }
 
 }
